@@ -12,8 +12,6 @@ import CForm from "@/src/components/form/CForm";
 import { useLoginMutation } from "@/src/lib/features/auth/authApi";
 import { addToast } from "@heroui/toast";
 
-import { useAppDispatch } from "@/src/lib/hook";
-
 import { jwtDecode } from "jwt-decode";
 import Cookies from "js-cookie";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
