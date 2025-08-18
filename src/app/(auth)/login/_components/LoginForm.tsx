@@ -14,7 +14,7 @@ import { addToast } from "@heroui/toast";
 
 import { jwtDecode } from "jwt-decode";
 import Cookies from "js-cookie";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import {  useRouter, useSearchParams } from "next/navigation";
 
 export default function LoginForm() {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);

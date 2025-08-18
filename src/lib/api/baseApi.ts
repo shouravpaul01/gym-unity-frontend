@@ -10,7 +10,7 @@ import Cookies from "js-cookie";
 
 
 const baseQuery = fetchBaseQuery({
-  baseUrl: "http://localhost:5000/api/",
+  baseUrl: "https://gymunity-api.vercel.app/api/",
   prepareHeaders: (headers) => {
     const token = Cookies.get("accessToken") 
     if (token) {

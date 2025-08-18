@@ -12,9 +12,11 @@ export default function Logout({user}: {user: ICurrentTookenData}) {
         <DropdownTrigger>
           <User
             as="button"
+            
             avatarProps={{
               isBordered: true,
               src: user?.image || "",
+              size:"sm"
             }}
             className="transition-transform"
             description={user.role}

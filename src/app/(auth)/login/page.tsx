@@ -1,4 +1,6 @@
+import { Suspense } from "react";
 import LoginForm from "./_components/LoginForm";
+import Loading from "@/src/components/Loading";
 
 export default function LoginPage() {
   return (
@@ -9,7 +11,9 @@ export default function LoginPage() {
           Welcome back! Please enter your details.
         </p>
       </div>
-      <LoginForm />
+      <Suspense fallback={<Loading className="h-52"/>}>
+        <LoginForm />
+      </Suspense>
     </div>
   );
 }

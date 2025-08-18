@@ -31,6 +31,7 @@ import CreateandUpdateForm from "./_components.ts/CreateandUpdateForm";
 import dayjs from "dayjs";
 import { divider } from "@heroui/theme";
 import { isAction } from "@reduxjs/toolkit";
+import { isAccessGranted } from "../../utils";
 
 export default function ManageUsersPage() {
     const modalDisclosure=useDisclosure();
@@ -72,9 +73,9 @@ export default function ManageUsersPage() {
   return (
     <div>
       <HeadingSection title="Manage Users" >
-        <Button color="success" size="sm" startContent={<AddIcon />} onPress={()=>modalDisclosure.onOpen()}>
+        {isAccessGranted(["admin"]) &&<Button color="success" size="sm" startContent={<AddIcon />} onPress={()=>modalDisclosure.onOpen()}>
             Create Schedule
-        </Button>
+        </Button>}
       </HeadingSection>
       <div>
         <Table
@@ -149,7 +150,7 @@ export default function ManageUsersPage() {
 
                 <TableCell>
                   {" "}
-                  <div className="flex items-center gap-2">
+                {isAccessGranted(["admin"]) &&  <div className="flex items-center gap-2">
                     <Chip
                       color={schedule.isActive ? "secondary" : "danger"}
                       variant="flat"
@@ -167,7 +168,7 @@ export default function ManageUsersPage() {
                         />
                      
                     
-                  </div>
+                  </div>}
                 </TableCell>
 
                 <TableCell>
@@ -183,7 +184,7 @@ export default function ManageUsersPage() {
                       </Button>
                     </Tooltip>
 
-                    <Tooltip color="primary" content="Edit user" showArrow>
+                  { isAccessGranted(["admin"]) && <Tooltip color="primary" content="Edit" showArrow>
                       <Button
                         isIconOnly
                         color="success"
@@ -192,7 +193,7 @@ export default function ManageUsersPage() {
                       >
                         <EditIcon />
                       </Button>
-                    </Tooltip>
+                    </Tooltip>}
                   </div>
                 </TableCell>
               </TableRow>
