@@ -1,0 +1,47 @@
+import { ISelectOption } from "@/src/types";
+import { Select, SelectItem, SelectProps } from "@heroui/select";
+import { ChangeEvent } from "react";
+
+import { useFormContext } from "react-hook-form";
+
+interface IProps {
+  name: string;
+  selectProps?: SelectProps | {};
+  options: ISelectOption[];
+  onChange?: (value: string) => void;
+}
+export default function CSelectInput({
+  name,
+  selectProps,
+  options,
+  onChange,
+}: IProps) {
+  const {
+    register,
+    setValue,
+    clearErrors,
+
+    formState: { errors },
+  } = useFormContext();
+  const handleChange = (selectedValue: any) => {
+    setValue(name, selectedValue);
+    onChange?.(selectedValue);
+    clearErrors(name);
+  };
+  return (
+    <Select
+      variant="bordered"
+      labelPlacement="outside"
+      size="lg"
+      {...register(name)}
+      {...selectProps}
+      isInvalid={!!errors[name]}
+      errorMessage={errors[name]?.message as string}
+      onChange={(e) => handleChange(e.target.value)}
+    >
+      {options?.map((option) => (
+        <SelectItem key={option.value}>{option.label}</SelectItem>
+      ))}
+    </Select>
+  );
+}

@@ -140,6 +140,35 @@ export default function LoginForm() {
           </p>
         </div>
       </CForm>
+      <div className="flex justify-center items-center gap-2 mt-4">
+     <Button
+      
+      color="success"
+      variant="flat"
+      size="sm"
+     onPress={()=>{methods.reset({email: "paul.shourav01@gmail.com", password: "Shouravpaul01"})}}
+    >
+     Admin Credential
+    </Button>
+     <Button
+      
+      color="success"
+      variant="flat"
+      size="sm"
+     onPress={()=>{methods.reset({email: "manik@gmail.com", password: "Manikullah01"})}}
+    >
+     Trainer Credential
+    </Button>
+     <Button
+      
+      color="success"
+      variant="flat"
+      size="sm"
+     onPress={()=>{methods.reset({email: "zahedullah@gmail.com", password: "Zahedullah01"})}}
+    >
+     Trainee Credential
+    </Button>
+  </div>
     </div>
   );
 }

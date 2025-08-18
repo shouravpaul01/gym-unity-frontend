@@ -14,7 +14,7 @@ export default function HeadingSection({
   children?: ReactNode;
 }) {
   return (
-    <div className="flex border-b pb-2">
+    <div className="flex border-b border-gray-200 pb-2">
       <div className="flex-1 flex items-center gap-2">
         {linkUrl && (
           <Button

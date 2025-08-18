@@ -2,29 +2,31 @@
 
 import { useState } from "react";
 import Sidebar from "./Sidebar";
+import { Button } from "@heroui/button";
+import { BarIcon } from "@/src/components/icons";
 
 export default function SidebarToggle() {
-  const [open, setOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
     <>
-      {/* Hamburger button */}
-      <button onClick={() => setOpen(true)} className="text-2xl">
-        ☰
-      </button>
+      
+      <Button isIconOnly color="success" variant="light" onPress={() => setIsOpen(true)} className="me-2">
+        <BarIcon />
+      </Button>
 
       {/* Mobile sidebar */}
-      {open && (
+      {isOpen && (
         <div className="h-screen fixed inset-0 z-20 ">
           {/* Overlay */}
           <div
             className="h-screen fixed inset-0 bg-black/30"
-            onClick={() => setOpen(false)}
+            onClick={() => setIsOpen(false)}
           />
 
           {/* Sidebar */}
         
-          <Sidebar isOpen={open} setIsOpen={setOpen} />
+          <Sidebar isOpen={isOpen} setIsOpen={setIsOpen} />
         </div>
       )}
     </>

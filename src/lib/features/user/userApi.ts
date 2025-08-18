@@ -5,10 +5,24 @@ export const userApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
     
     getAllUsers: build.query({
-      query: () => ({
-        url: "user/",
+        query: (args) => {
+      
+        const params=new URLSearchParams()
+        if (args) {
+          
+          args?.forEach((arg:{ label: string; value: any })=> {
+            if (arg?.value) {
+              
+              params.append(arg.label, arg.value);
+            }
+          })
+        }
+       return {
+         url: "user/",
         method: "GET",
-      }),
+        params:params
+       }
+      },
       providesTags: ["users"],
     }),
     
@@ -17,7 +31,7 @@ export const userApi = baseApi.injectEndpoints({
         url: `user/single-user/${email}`,
         method: "GET",
       }),
-      providesTags: ["single-user"],
+      providesTags: ["singleUser"],
     }),
     
     updateUser: build.mutation({
@@ -35,7 +49,6 @@ export const userApi = baseApi.injectEndpoints({
         method: "PATCH",
         
       }),
-      invalidatesTags:["users"]
     }),
    
     updateUserStatus: build.mutation({
@@ -44,7 +57,6 @@ export const userApi = baseApi.injectEndpoints({
         method: "PATCH",
         
       }),
-      invalidatesTags:["users"]
     }),
   }),
 });

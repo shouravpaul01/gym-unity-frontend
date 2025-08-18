@@ -13,33 +13,34 @@ import CForm from "@/src/components/form/CForm";
 import CInput from "@/src/components/form/CInput";
 import { useRegisterMutation } from "@/src/lib/features/auth/authApi";
 import { addToast } from "@heroui/toast";
-import { redirect } from "next/navigation";
+import {  useRouter } from "next/navigation";
+import { email } from "zod";
 
 export default function RegisterForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] =
     useState(false);
-
+const router=useRouter()
   const methods = useForm({
     resolver: zodResolver(registerValidationSchema),
     
   });
   const [registerUser, { isLoading }] = useRegisterMutation();
 
-  const onSubmit: SubmitHandler<FieldValues> = async (data) => {
+  const handleSubmit: SubmitHandler<FieldValues> = async (data) => {
     setIsSubmitting(true);
     try {
       
      const res= await registerUser(data).unwrap();
       addToast({ description: res?.message, color: "success" });
-      redirect("/login")
+      router.push("/login")
       methods.reset();
     } catch (error:any) {
     
-      const errorMessages = error?.data.errorMessages;
-      if (errorMessages.length > 0) {
-        errorMessages.forEach((errorMessage: any) =>
+      const errorMessages = error?.data?.errorMessages;
+      if (errorMessages?.length > 0) {
+        errorMessages?.forEach((errorMessage: any) =>
           methods.setError(errorMessage.path, {
             type: "manual",
             message: errorMessage.message,
@@ -52,7 +53,8 @@ export default function RegisterForm() {
     }
   };
   return (
-    <CForm onSubmit={onSubmit} methods={methods as any} className="space-y-4">
+   <>
+    <CForm onSubmit={handleSubmit} methods={methods as any} className="space-y-4">
         
     <div className="space-y-10">
     <CInput
@@ -152,5 +154,7 @@ export default function RegisterForm() {
       </p>
     </div>
   </CForm>
+  
+   </>
   )
 }

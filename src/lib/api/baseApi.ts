@@ -35,6 +35,6 @@ const baseQueryWithVerifyToken = async (
 export const baseApi = createApi({
   reducerPath: "baseApi",
   baseQuery: baseQueryWithVerifyToken,
-  tagTypes: ["users","single-user"],
+  tagTypes: ["users","singleUser","classSchedules", "classSchedule"],
   endpoints: () => ({}),
 });

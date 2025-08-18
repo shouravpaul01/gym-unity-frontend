@@ -1,8 +1,9 @@
 "use client";
 
-import { GroupPeoleIcon } from "@/src/components/icons";
+import { CalenderClockIcon, GroupPeoleIcon } from "@/src/components/icons";
 import { Button } from "@heroui/button";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 export default function Sidebar({
   isOpen,
@@ -11,38 +12,46 @@ export default function Sidebar({
   isOpen?: boolean;
   setIsOpen?: (open: boolean) => void;
 }) {
+  const pathName = usePathname();
   return (
     <aside
       className={`h-full  w-64 md:flex md:flex-col  bg-white md:shadow-md ${isOpen ? "block relative z-30" : "hidden"}`}
     >
       <div>
-        <div className="px-4 py-3 border-b">
-          <h2 className="text-xl font-bold text-gray-700">Dashboard</h2>
-          <button onClick={() => setIsOpen?.(false)} className="text-xl">
-            ✖
-          </button>
+        <div className="px-4 py-[16px] border-b border-dashed border-success">
+          <h2 className="text-2xl font-bold text-center text-gray-700">GymUnity</h2>
+          {isOpen && (
+            <Button
+              isIconOnly
+              radius="full"
+              size="sm"
+              onPress={() => setIsOpen?.(false)}
+              className="text-md absolute top-2 -right-3"
+            >
+              ✖
+            </Button>
+          )}
         </div>
-        <nav className="mt-6 flex flex-col gap-2 p-2">
+        <nav className="mt-6 flex flex-col gap-2 p-3">
           <Button
-            
-            variant="light"
+            variant={pathName === "/manage-users" ? "solid" : "light"}
             color="success"
+            className="justify-start gap-3"
             as={Link}
             href="/manage-users"
-            startContent={<GroupPeoleIcon/>}
+            startContent={<GroupPeoleIcon />}
           >
             Manage users
           </Button>
-          <Button fullWidth variant="light" as={Link} href="/dashboard/users">
-            Users
-          </Button>
           <Button
-            fullWidth
-            variant="light"
+            variant={pathName === "/manage-class-schedules" ? "solid" : "light"}
+            color="success"
+            className="justify-start gap-3"
             as={Link}
-            href="/dashboard/settings"
+            href="/manage-class-schedules"
+            startContent={<CalenderClockIcon />}
           >
-            Settings
+            Manage Class Schedules
           </Button>
         </nav>
       </div>

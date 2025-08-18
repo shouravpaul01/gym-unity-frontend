@@ -19,13 +19,14 @@ export default  async function DashboardLayout({ children }: { children: ReactNo
         {/* Top Navbar */}
         <Navbar maxWidth="full" className="shadow">
           <NavbarBrand>
-            <p className="font-bold text-inherit">GymUnity</p>
-          </NavbarBrand>
-          <NavbarContent justify="end">
-            {/* Mobile sidebar toggle (client) */}
             <NavbarItem className="lg:hidden">
               <SidebarToggle />
             </NavbarItem>
+            <p className="font-bold text-inherit">Dashboard</p>
+          </NavbarBrand>
+          <NavbarContent justify="end">
+           
+            
             <NavbarItem>
               <Logout user={user as any} />
             </NavbarItem>

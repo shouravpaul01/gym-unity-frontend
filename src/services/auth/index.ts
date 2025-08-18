@@ -2,6 +2,7 @@
 import { ICurrentTookenData } from "@/src/types";
 import { jwtDecode } from "jwt-decode";
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
 export const getCurrentuser = async () => {
   const cookieStore = await cookies()
@@ -17,5 +18,7 @@ export const logoutUser = async () => {
   
     
   const cookieStore = await cookies()
-  return cookieStore.delete("accessToken");
+  cookieStore.delete("accessToken");
+  redirect("/login");
+  
 };

@@ -14,7 +14,7 @@ export default function Logout({user}: {user: ICurrentTookenData}) {
             as="button"
             avatarProps={{
               isBordered: true,
-              src: "https://i.pravatar.cc/150?u=a042581f4e29026024d",
+              src: user?.image || "",
             }}
             className="transition-transform"
             description={user.role}
@@ -24,7 +24,7 @@ export default function Logout({user}: {user: ICurrentTookenData}) {
         <DropdownMenu aria-label="User Actions" variant="flat">
           
           
-          <DropdownItem key="logout" color="danger" onPress={()=>logoutUser}>
+          <DropdownItem key="logout" color="danger" onPress={async()=> {await logoutUser()}}>
             Log Out
           </DropdownItem>
         </DropdownMenu>

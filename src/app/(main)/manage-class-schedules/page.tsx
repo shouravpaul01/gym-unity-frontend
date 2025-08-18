@@ -1,21 +1,18 @@
 "use client";
 import HeadingSection from "@/src/components/HeadingSection";
-import { EditIcon, InfoIcon, PersonEditIcon } from "@/src/components/icons";
+import { AddIcon, EditIcon, InfoIcon, PersonEditIcon } from "@/src/components/icons";
 import Loading from "@/src/components/Loading";
-import { roleOptions } from "@/src/constent";
-import { useGetAllUsersQuery, useUpdateUserRoleMutation, useUpdateUserStatusMutation } from "@/src/lib/features/user/userApi";
-import { IQuery, IUserInfo } from "@/src/types";
+
+import { useGetAllClassSchedulesQuery, useUpdateClassScheduleStatusMutation } from "@/src/lib/features/classSchedule/classScheduleApi";
+
+import { IClassSchedule, IQuery, IUserInfo } from "@/src/types";
 import { Button } from "@heroui/button";
 
 import { Chip } from "@heroui/chip";
-import {
-  Dropdown,
-  DropdownItem,
-  DropdownMenu,
-  DropdownTrigger,
-} from "@heroui/dropdown";
+
+import { useDisclosure } from "@heroui/modal";
 import { Pagination } from "@heroui/pagination";
-import { Popover, PopoverTrigger } from "@heroui/popover";
+
 import { Switch } from "@heroui/switch";
 import {
   Table,
@@ -29,9 +26,14 @@ import { addToast } from "@heroui/toast";
 import { Tooltip } from "@heroui/tooltip";
 import { User } from "@heroui/user";
 import { useSearchParams } from "next/navigation";
-import { useMemo, useState } from "react";
+import { use, useMemo, useState } from "react";
+import CreateandUpdateForm from "./_components.ts/CreateandUpdateForm";
+import dayjs from "dayjs";
+import { divider } from "@heroui/theme";
+import { isAction } from "@reduxjs/toolkit";
 
 export default function ManageUsersPage() {
+    const modalDisclosure=useDisclosure();
   const searchParams = useSearchParams();
   const searchTerm = searchParams.get("search");
   const [page, setPage] = useState<number>(1);
@@ -42,46 +44,38 @@ export default function ManageUsersPage() {
     }
     return params;
   }, [page, searchParams]);
-  const [updateUserStatus] = useUpdateUserStatusMutation();
-   const [updateUserRole] = useUpdateUserRoleMutation();
-  const { data: users, isLoading } = useGetAllUsersQuery({
+  const [updateClassScheduleStatus] = useUpdateClassScheduleStatusMutation();
+   
+  const { data: schedules, isLoading } = useGetAllClassSchedulesQuery({
     query: queryParams,
   });
+  console.log(schedules,"s")
   const loadingState = isLoading ? "loading" : "idle";
 
-  const handleStatus = async(userId: string,status:boolean) => {
+  const handleStatus = async(classScheduleId: string,status:boolean) => {
   
     try {
-        const res= await updateUserStatus({userId,isBlocked:status})
+        const res= await updateClassScheduleStatus({classScheduleId,isActive:status})
         addToast({description: res.data.message,color:"success"})
     } catch (error:any) {
-       const errorMessages = error?.data.errorMessages;
-       if (errorMessages[0].path==="userError") {
-        addToast({description: errorMessages[0].message,color:"danger"})
+      console.log(error,"error")
+       const errorMessages = error?.data?.errorMessages;
+       if (errorMessages[0]?.path==="classScheduleError") {
+        addToast({description: errorMessages[0]?.message,color:"danger"})
        }
         addToast({description: "Unexpected error occurred",color:"danger"})
     }
     
   
   };
-  const handleUpdaterole = async(userId: string,role:string) => {
-   
-    try {
-        const res= await updateUserRole({userId,role})
-        addToast({description: res.data.message,color:"success"})
-    } catch (error:any) {
-       const errorMessages = error?.data.errorMessages;
-       if (errorMessages[0].path==="userError") {
-        addToast({description: errorMessages[0].message,color:"danger"})
-       }
-        addToast({description: "Unexpected error occurred",color:"danger"})
-    }
-    
   
-  };
   return (
     <div>
-      <HeadingSection title="Manage Users" />
+      <HeadingSection title="Manage Users" >
+        <Button color="success" size="sm" startContent={<AddIcon />} onPress={()=>modalDisclosure.onOpen()}>
+            Create Schedule
+        </Button>
+      </HeadingSection>
       <div>
         <Table
           aria-label="Example table with client side pagination"
@@ -90,9 +84,9 @@ export default function ManageUsersPage() {
             <div className=" w-full ">
               <Pagination
                 showControls
-                color="primary"
+                color="success"
                 page={page}
-                total={users?.totalPages || 0}
+                total={schedules?.totalPages }
                 onChange={(page) => setPage(page)}
               />
             </div>
@@ -102,63 +96,54 @@ export default function ManageUsersPage() {
           }}
         >
           <TableHeader>
-            <TableColumn key="name">NAME</TableColumn>
-            <TableColumn key="role">ROLE</TableColumn>
-            <TableColumn key="status">STATUS</TableColumn>
-
+            <TableColumn key="date">Date</TableColumn>
+            <TableColumn key="time">Start Time - End Time</TableColumn>
+            
+<TableColumn key="Status">Status</TableColumn>
             <TableColumn key="action">Action</TableColumn>
           </TableHeader>
           <TableBody
-            items={(users?.data?.data as IUserInfo[]) ?? []}
+            items={(schedules?.data?.data as IClassSchedule[]) ?? []}
             loadingContent={<Loading className="h-auto" />}
             loadingState={loadingState}
             emptyContent={<p>Data not found.</p>}
           >
-            {(user) => (
-              <TableRow key={user._id}>
+            {(schedule) => (
+              <TableRow key={schedule._id}>
                 <TableCell>
                   <User
-                    avatarProps={{ radius: "lg", src: user?.image }}
-                    description={<p>{user?.email}</p>}
-                    name={user?.name}
+                    avatarProps={{ radius: "lg", src: (schedule.trainer as IUserInfo)?.name}}
+                    description={<div>
+
+                      <div className="flex items-center  gap-1">
+                        <span className="font-semibold">Date:</span>
+                        <Chip color="secondary" variant="flat" size="sm">
+                          {dayjs(schedule.date).format("MMMM D, YYYY")}
+                        </Chip>
+                      </div>
+                    </div>}
+                    name={<div className="flex  gap-1">
+                        <span className="font-semibold">Trainer:</span>
+                        <span>{(schedule.trainer as IUserInfo)?.name}</span>
+                      </div>}
                   />
+                  
                 </TableCell>
                 <TableCell>
-                  <div className="flex items-center gap-2">
+                  <div className="flex gap-2">
+                    <div className="flex gap-1 items-center">
+                       <span className="font-semibold">Start Time:</span>
                     <Chip color="secondary" variant="flat" size="sm">
-                      {user?.role.toUpperCase()}
+                      {dayjs(schedule.startTime).format("h:mm A")}
                     </Chip>
-                    <Dropdown>
-                      <DropdownTrigger>
-                        <Button
-                          isIconOnly
-                          variant="flat"
-                          color="success"
-                          size="sm"
-                        >
-                          <PersonEditIcon />
-                        </Button>
-                      </DropdownTrigger>
-                      <DropdownMenu
-                      disallowEmptySelection
-                        aria-label="Dynamic Actions"
-                        items={roleOptions}
-                        color="success"
-                        selectionMode="single"
-                        variant="flat"
-                      >
-                        {(role) => (
-                          <DropdownItem
-                            key={role.value}
-                            isDisabled={user?.role === role.value}
-                           
-                            onPress={() => handleUpdaterole(user?._id!,role.value)}
-                          >
-                            {role.label}
-                          </DropdownItem>
-                        )}
-                      </DropdownMenu>
-                    </Dropdown>
+                  </div>
+                  -
+                  <div className="flex gap-1 items-center">
+                       <span className="font-semibold">Start Time:</span>
+                    <Chip color="secondary" variant="flat" size="sm">
+                      {dayjs(schedule.startTime).format("h:mm A")}
+                    </Chip>
+                  </div>
                   </div>
                 </TableCell>
 
@@ -166,19 +151,19 @@ export default function ManageUsersPage() {
                   {" "}
                   <div className="flex items-center gap-2">
                     <Chip
-                      color={user.isBlocked ? "secondary" : "danger"}
+                      color={schedule.isActive ? "secondary" : "danger"}
                       variant="flat"
                       size="sm"
                     >
-                      {user?.isBlocked ? "Blocked" : "Unblocked"}
+                      {schedule.isActive ? "Active" : "Inactive"}
                     </Chip>
                     
                       
                         <Switch
-                          isSelected={user?.isBlocked}
+                          isSelected={schedule.isActive}
                           color="success"
                           size="sm"
-                          onValueChange={(value) => handleStatus(user?._id!,value as boolean)}
+                          onValueChange={(value) => handleStatus(schedule?._id!,value as boolean)}
                         />
                      
                     
@@ -215,6 +200,7 @@ export default function ManageUsersPage() {
           </TableBody>
         </Table>
       </div>
+      <CreateandUpdateForm useDisclosure={modalDisclosure}/>
     </div>
   );
 }
