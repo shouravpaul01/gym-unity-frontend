@@ -34,8 +34,8 @@ export default function ClassScheduleCard({
           <div className="flex items-center gap-2">
             <span>Available</span>
             <Chip color="secondary" variant="flat" size="sm">
-            {10-schedule.trainees?.length}
-          </Chip>
+              {10 - schedule.trainees?.length}
+            </Chip>
           </div>
       </CardBody>
       <CardFooter>

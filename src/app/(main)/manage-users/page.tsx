@@ -44,9 +44,8 @@ export default function ManageUsersPage() {
   }, [page, searchParams]);
   const [updateUserStatus] = useUpdateUserStatusMutation();
    const [updateUserRole] = useUpdateUserRoleMutation();
-  const { data: users, isLoading } = useGetAllUsersQuery({
-    query: queryParams,
-  });
+  const { data: users, isLoading } = useGetAllUsersQuery(queryParams);
+  console.log(users,"users")
   const loadingState = isLoading ? "loading" : "idle";
 
   const handleStatus = async(userId: string,status:boolean) => {
@@ -90,9 +89,9 @@ export default function ManageUsersPage() {
             <div className=" w-full ">
               <Pagination
                 showControls
-                color="primary"
+                color="secondary"
                 page={page}
-                total={users?.totalPages || 0}
+                total={users?.totalPages }
                 onChange={(page) => setPage(page)}
               />
             </div>
