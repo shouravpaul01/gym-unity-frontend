@@ -44,6 +44,7 @@ export const userApi = baseApi.injectEndpoints({
         url: `user/update-role/${arg.userId}?role=${arg.role}`,
         method: "PATCH",
       }),
+      invalidatesTags: ["users"],
     }),
 
     updateUserStatus: build.mutation({
@@ -51,6 +52,7 @@ export const userApi = baseApi.injectEndpoints({
         url: `user/update-status/${arg.userId}?isBlocked=${arg.isBlocked}`,
         method: "PATCH",
       }),
+      invalidatesTags: ["users"],
     }),
   }),
 });
